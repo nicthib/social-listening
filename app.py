@@ -68,7 +68,9 @@ if st.button("Go!"):
             df = df[df['Score'] >= min_score]
             df = df[df['ZIP'] != 'N/A']
             df.drop_duplicates(subset=['Message'], inplace=True)
-
+            df.rename(columns={'Name_x':'Name'})
+            df.rename(columns={'Name_y':'Account Owner'})
+            
             output_filename = uploaded_file.name.replace('.xlsx', '_processed.xlsx')
             output = io.BytesIO()
             df.to_excel(output, index=False, engine='openpyxl')
@@ -84,3 +86,4 @@ if st.button("Go!"):
             st.error(f"An error occurred: {e}")
     else:
         st.warning("Please upload a file and enter the location data string.")
+
