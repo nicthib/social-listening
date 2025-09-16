@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import io
 
 st.title("Excel File Processor")
 
@@ -69,9 +70,16 @@ if st.button("Go!"):
             df.drop_duplicates(subset=['Message'], inplace=True)
 
             output_filename = uploaded_file.name.replace('.xlsx', '_processed.xlsx')
-            df.to_excel(output_filename, index=False)
-
-            st.success(f"File processed and saved as {output_filename}")
+            output = io.BytesIO()
+            df.to_excel(output, index=False, engine='openpyxl')
+            output.seek(0)
+            st.success("File processed successfully!")
+            st.download_button(
+                label="📥 Download Processed Excel",
+                data=output,
+                file_name=uploaded_file.name.replace('.xlsx', '_processed.xlsx'),
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
         except Exception as e:
             st.error(f"An error occurred: {e}")
     else:
